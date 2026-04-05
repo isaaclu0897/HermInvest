@@ -6,7 +6,7 @@ A lightweight investment management platform built with Go, featuring both CLI a
 
 - [Key Features](#key-features)
 - [Preview](#preview)
-  - [Web Usage](#web-ssage)
+  - [Web Usage](#web-usage)
   - [CLI Usage](#cli-usage)
 - [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
