@@ -14,10 +14,9 @@ A lightweight investment management platform built with Go, featuring both CLI a
 
 ## Key Features
 
-- **Dual Interface**: CLI for operations, Web UI for visualization
-- **Flexible Data Ingestion**: Supports multiple data sources with normalization (commission history, manual input, stock mapping)
-- **Lightweight & Portable**: SQLite-based design with minimal setup
-- **Built-in Visualization**: Trading insights powered by Chart.js
+- **Interface**: Manage stock records via **CLI** (CRUD) and visualize trading data via **Web UI** powered by Chart.js.
+- **Data Import**: Support **CSV imports** with built-in normalization, automatically persisting records into a **SQLite**.
+- **Portability**: Developed in **Go** with a lightweight, zero-config design for easy cross-platform deployment and minimal dependencies.
 
 ## Preview
 
