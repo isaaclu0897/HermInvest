@@ -132,6 +132,18 @@ func (repo *repository) QueryTransactionInventory() ([]*model.Transaction, error
 	return transactions, nil
 }
 
+// QueryTransactionInventoryByStockNo
+func (repo *repository) QueryTransactionInventoryByStockNo(stockNo string) ([]*model.Transaction, error) {
+	var transactions []*model.Transaction
+
+	err := repo.db.Preload("StockMapping").
+		Where("stockNo = ?", stockNo).Find(&transactions).Error
+	if err != nil {
+		return nil, err
+	}
+	return transactions, nil
+}
+
 // updateTransaction
 func (repo *repository) UpdateTransaction(id int, t *model.Transaction) error {
 	err := repo.db.Updates(t).Error

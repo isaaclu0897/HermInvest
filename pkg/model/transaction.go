@@ -1,6 +1,9 @@
 package model
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // Transaction represents a record of a share transaction.
 type TransactionRecord struct {
@@ -155,4 +158,39 @@ type StockMapping struct {
 
 func (sp *StockMapping) TableName() string {
 	return "tblStockMapping" // default table name
+}
+
+// This approach is a simple and concise way to implement custom JSON marshalling.
+//
+// This method is suitable for scenarios where the structure of the JSON output is
+// relatively simple and the fields to be added or modified are limited and static.
+func (t *Transaction) MarshalJSONbyGPT() ([]byte, error) {
+	type Alias Transaction // Create an alias to avoid infinite recursion
+	return json.Marshal(&struct {
+		*Alias
+		StockName string `json:"stock_name"`
+	}{
+		Alias:     (*Alias)(t),
+		StockName: t.StockMapping.StockName,
+	})
+}
+
+// This approach uses mapping to build a flexible struct for the JSON format.
+//
+// This method is more readable and provides better flexibility when you need to
+// modify or add logic to the JSON output based on specific conditions.
+// Reference: https://stackoverflow.com/questions/26303694/json-marshalling-unmarshalling-same-struct-to-different-json-format-in-go?rq=3
+func (t *Transaction) MarshalJSON() ([]byte, error) {
+	m := map[string]interface{}{}
+	m["ID"] = t.ID
+	m["Date"] = t.Date
+	m["Time"] = t.Time
+	m["StockNo"] = t.StockNo
+	m["StockName"] = t.StockMapping.StockName
+	m["Quantity"] = t.Quantity
+	m["UnitPrice"] = t.UnitPrice
+	m["TotalAmount"] = t.TotalAmount
+	m["Taxes"] = t.Taxes
+
+	return json.Marshal(m)
 }

@@ -25,9 +25,14 @@ func init() {
 func webRun(cmd *cobra.Command, args []string) {
 	router := gin.Default()
 
+	// load HTML files - Is it a best way?
+	router.LoadHTMLFiles("html/transactionDetails.html")
+
 	router.GET("/", homePage)
 	router.GET("/transaction", transactionPage)
 	router.GET("/api/transaction", apiGetTransactions)
+	router.GET("/transactionDetails/:stockNo", transactionDetailsPage)
+	router.GET("/api/transaction/:stockNo", apiGetTransactionsByStockNo)
 	router.Static("/assets", "./assets")
 
 	open("http://127.0.0.1:9453/transaction")
@@ -50,8 +55,36 @@ func homePage(c *gin.Context) {
 
 func apiGetTransactions(c *gin.Context) {
 	// transactions := []*model.Transaction{
-	// 	{ID: 1, StockNo: "ABC", TranType: 1, Quantity: 100, UnitPrice: 10.50, TotalAmount: 1050, Taxes: 50},
-	// 	{ID: 2, StockNo: "XYZ", TranType: 2, Quantity: 50, UnitPrice: 20.25, TotalAmount: 1012, Taxes: 12},
+	// 	{
+	// 		ID:          0,
+	// 		Date:        "",
+	// 		Time:        "",
+	// 		StockNo:     "0050",
+	// 		TranType:    0,
+	// 		Quantity:    5000,
+	// 		UnitPrice:   111,
+	// 		TotalAmount: 557550,
+	// 		Taxes:       1672,
+	// 		StockMapping: model.StockMapping{
+	// 			StockNo:   "0050",
+	// 			StockName: "元大台灣50",
+	// 		},
+	// 	},
+	// 	{
+	// 		ID:          0,
+	// 		Date:        "",
+	// 		Time:        "",
+	// 		StockNo:     "00902",
+	// 		TranType:    0,
+	// 		Quantity:    7000,
+	// 		UnitPrice:   12,
+	// 		TotalAmount: 87010,
+	// 		Taxes:       259,
+	// 		StockMapping: model.StockMapping{
+	// 			StockNo:   "00902",
+	// 			StockName: "中信電池及儲能",
+	// 		},
+	// 	},
 	// }
 	db := repository.GetDBConnection()
 
@@ -61,6 +94,25 @@ func apiGetTransactions(c *gin.Context) {
 	transactions, err := repo.QueryTransactionInventory()
 	if err != nil {
 		fmt.Println("err: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to query transaction"})
+		return
+	}
+
+	c.JSON(http.StatusOK, transactions)
+}
+
+func apiGetTransactionsByStockNo(c *gin.Context) {
+	db := repository.GetDBConnection()
+
+	repo := repository.NewRepository(db)
+
+	stockNo := c.Param("stockNo")
+
+	transactions, err := repo.QueryTransactionInventoryByStockNo(stockNo)
+	if err != nil {
+		fmt.Println("err: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to query transaction by StockNo"})
+		return
 	}
 
 	c.JSON(http.StatusOK, transactions)
@@ -75,6 +127,16 @@ func transactionPage(c *gin.Context) {
 	}
 
 	c.Data(http.StatusOK, "text/html", pageHTML)
+}
+
+func transactionDetailsPage(c *gin.Context) {
+
+	stockNo := c.Param("stockNo")
+
+	// transfer stockNo to template
+	c.HTML(http.StatusOK, "transactionDetails.html", gin.H{
+		"stockNo": stockNo,
+	})
 }
 
 func open(url string) error { // open url from browser

@@ -8,9 +8,8 @@ GORUN=$(GOCMD) run
 GOCLEAN=$(GOCMD) clean
 
 # Paths and names
-SRC_NAME=*
 SRC_FOLDER=./cmd/hermInvestCli
-SRC_PATH=$(SRC_FOLDER)/$(SRC_NAME)
+SRC_PATH=$(SRC_FOLDER)
 BIN_NAME=hermInvestCli
 DB=./internal/app/database/dev-database.db
 CREATE_DB_CMD=./cmd/internal/createDBSchema/createDBSchema.go
@@ -39,11 +38,11 @@ endif
 
 all: exec
 
-$(BIN_NAME)$(BIN_EXT): $(SRC_PATH).go ./pkg/*/*.go
+$(BIN_NAME)$(BIN_EXT): $(SRC_PATH)
 	$(MAKE) build
 
 build:
-	$(GOBUILD) -o $(BIN_NAME)$(BIN_EXT) $(SRC_PATH).go
+	$(GOBUILD) -o $(BIN_NAME)$(BIN_EXT) $(SRC_PATH)
 
 exec: $(BIN_NAME)$(BIN_EXT)
 	./$(BIN_NAME)$(BIN_EXT)

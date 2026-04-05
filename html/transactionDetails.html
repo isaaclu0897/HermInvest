@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!-- HMTL Editor https://htmleditor.io/ -->
+<!-- HMTL Formatter https://webformatter.com/html -->
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>HermInvest</title>
+        <!-- import jQuery, Bootstrap Table, ChartJS -->
+        <script src="/assets/jquery-3.5.1.js"></script>
+        <link rel="stylesheet" href="/assets/bootstrap-4.5.2.css" />
+        <link rel="stylesheet" href="/assets/bootstrap-table-1.18.2.css" />
+        <script src="/assets/bootstrap-table-1.18.2.js"></script>
+        <script src="/assets/chart.umd-4.4.2.js"></script>
+        <style>
+            /* TODO: Don't control by yourself, control by Table */
+            .bootstrap-table.bootstrap4 {
+                width: 1000px;
+            }
+
+            .container {
+                display: inline-flex;
+            }
+        </style>
+    </head>
+    <body>
+        <ul>
+            <li><a href="/">HermInvest</a></li>
+            <li><a href="/transaction">Transaction</a></li>
+            <li><a href="/transactionHistory">TransactionHistory</a></li>
+            <li><a href="/transactionCash">TransactionCash</a></li>
+        </ul>
+        <h1>Transaction Details for Stock: {{.stockNo}}</h1>
+        <p>Track stock details.</p>
+        <div class="container">
+            <!-- Bootstrap Table -->
+            <div>
+                <table
+                    data-toggle="table"
+                    data-pagination="true"
+                    data-search="true"
+                    data-sort-name="TotalAmount"
+                    data-sort-order="desc"
+                >
+                    <thead>
+                        <tr>
+                            <th data-field="Date">Date</th>
+                            <th data-field="Time">Time</th>
+                            <th data-field="StockNo">Stock No</th>
+                            <th data-field="StockName">Stock Name</th>
+                            <th data-field="Quantity">Qty (shares)</th>
+                            <th data-field="UnitPrice" data-formatter="unitPriceFormatter">Unit Price</th>
+                            <th data-field="TotalAmount">Total Amount</th>
+                            <th data-field="Taxes">Taxes</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+        <script>
+            const stockNo = "{{.stockNo}}";  // take stockNo from  back end - template
+
+            fetch(`/api/transaction/${stockNo}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateTable(data);
+                })
+                .catch(error => console.error("Error fetching data:", error));
+            
+            function updateTable(data) {
+                $("table").bootstrapTable("load", data);
+            }
+
+            function unitPriceFormatter(value) {
+                return parseFloat(value).toFixed(2);
+            }
+        </script>
+    </body>
+</html>
