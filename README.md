@@ -22,9 +22,14 @@ A lightweight investment management platform built with Go, featuring both CLI a
 ## Preview
 
 ### Web Dashboard
-<img src="https://your-image-url" width="600">
+<img src="https://meee.com.tw/gPZFWDs.png" width="500">
 
 ### CLI Usage
+
+<img src="https://meee.com.tw/LuS66rQ.png" width="400"> <img src="https://meee.com.tw/B1gn8WZ.png" width="360">
+
+
+
 ```bash
 ./hermInvestCli add --symbol AAPL --price 180 --qty 10
 ./hermInvestCli query --all
